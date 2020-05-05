@@ -14,7 +14,7 @@ ros::NodeHandle node;
 void CommandCallBack(const geometry_msgs::Twist &msg)
 {
   linear=msg.linear.x;
-  linear=map(linear,0.5,20,1000,2000);
+  linear=map(linear,-1,1,-1000,1000);
   angular=msg.angular.z;
 }
 std_msgs::String str_msg;
