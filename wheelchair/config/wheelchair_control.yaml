@@ -1,0 +1,85 @@
+wheelchair:
+  # # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+
+  left_wheel_controller:
+    type: effort_controllers/JointVelocityController
+    joint: rear_left_holder_to_wheel
+    pid: { p: 100.0, i: 0.1, d: 10.0}
+
+  right_wheel_controller:
+    type: effort_controllers/JointVelocityController
+    joint: rear_right_holder_to_wheel
+    pid: { p: 100.0, i: 0.1, d: 10.0}
+    
+# wheelchair:
+  mobile_base_controller:
+    type        : "diff_drive_controller/DiffDriveController"
+    left_wheel  : ['rear_left_holder_to_wheel' ] #, 'front_left_holder_to_wheel']
+    right_wheel : ['rear_right_holder_to_wheel'] #, 'rear_right_holder_to_wheel']
+    publish_rate: 50.0               # default: 50
+    enable_odom_tf: false # NEW
+
+    pose_covariance_diagonal : [0.001, .001, 1000000., 1000000., 1000000., 1000.]
+    twist_covariance_diagonal: [0.001, .001, 1000000., 1000000., 1000000., 1000.]
+    # Velocity commands timeout [s], default 0.5
+    cmd_vel_timeout: 0.25
+   
+    # Wheel separation and diameter. These are both optional.
+    # diff_drive_controller will attempt to read either one or both from the
+    # URDF if not specified as a parameter
+    wheel_separation : 0.624 #1.0
+    wheel_radius : 0.0779
+   
+    # # Wheel separation and radius multipliers
+    wheel_separation_multiplier: 1.0 # default: 1.0
+    wheel_radius_multiplier    : 1.0 # default: 1.0
+   
+   
+    # Base frame_id
+    base_frame_id: base_link #default: base_link
+    odom_frame_id: odom
+   
+    # Velocity and acceleration limits
+    # Whenever a min_* is unspecified, default to -max_*
+    linear:
+      x:
+        has_velocity_limits    : true
+        max_velocity           : 1.0  # m/s
+        min_velocity           : -0.7 # m/s
+        has_acceleration_limits: true
+        max_acceleration       : 0.8  # m/s^2
+        min_acceleration       : -0.4 # m/s^2
+        has_jerk_limits        : true
+        max_jerk               : 5.0  # m/s^3
+    angular:
+      z:
+        has_velocity_limits    : true
+        max_velocity           : 3  # rad/s
+        has_acceleration_limits: true
+        max_acceleration       : 3  # rad/s^2
+        has_jerk_limits        : true
+        max_jerk               : 2.5  # rad/s^3
+
+
+  # gazebo_ros_control:
+  #  pid_gains:
+  #    rear_left_holder_to_wheel:
+  #      p: 100.0
+  #      i: 0.10
+  #      d: 0.0
+  #    rear_right_holder_to_wheel:
+  #      p: 100.0
+  #      i: 0.10
+  #      d: 0.0
+
+# https://answers.gazebosim.org//question/4102/my-robot-blows-up-when-i-launch-the-controllers-update-2/
+# https://answers.gazebosim.org/question/4102/my-robot-blows-up-when-i-launch-the-controllers-update-2/
+# https://github.com/ros-simulation/gazebo_ros_demos/tree/kinetic-devel/rrbot_description/urdf
+# http://gazebosim.org/tutorials/?tut=ros_control
+# https://answers.gazebosim.org//question/20994/making-a-differential-drive-robot-move/
+# https://www.theconstructsim.com/how-to-build-a-differential-drive-simulation/
+
+# PID issue - https://github.com/ros-industrial/universal_robot/issues/397
