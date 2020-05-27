@@ -21,18 +21,15 @@
     <arg name="world_name" value="$(arg gazebo_world_file)"/>
   </include> -->
 
-   <arg name="init_pose" value="-x 0 -y 0 -z 0 -R 0 -P 0 -Y 1.57"/>
+   <arg name="init_pose" value="-x 0 -y 0 -z 0 -R 0 -P 0 -Y -1.57"/>
     <param name="robot_description" textfile="$(find wheelchair)/urdf/wheelchair.urdf" />
     <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" args="-unpause -urdf -param robot_description -model wheelchair"/>
 
 <node name="fake_joint_calibration" pkg="rostopic" type="rostopic" args="pub /calibrated std_msgs/Bool true" />
        
-       <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster"
-      args="0.25 0.25 0 -1.57 0 0 /map /odom 40"/>
-      <!-- <node pkg ="tf" type="static_transform_publisher" name="odom_to_base_link" args="0.0 0.0 0.0 0.0 0.0 0.0 /odom /base_link 40"/> -->
+<node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0.25 0.25 0 -1.57 0 0 /map /odom 40"/>
 
 <node pkg="tf" type="static_transform_publisher" name="base_link_to_base_laser" args="0.75 -0.0 0.3 0.0 0.0 0.0 /base_link /base_laser 40" />
-<!--     <node pkg="tf" type="static_transform_publisher" name="base_laser_to_laser_frame" args="0.0 0.0 0.0 0.0 0.0 0.0 /base_laser /laser_frame 40" /> -->
 
 
 <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
