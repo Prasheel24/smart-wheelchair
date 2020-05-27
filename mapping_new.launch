@@ -22,10 +22,7 @@
 
      <!-- Broadcast Required TF for Gmappng -->
      <!-- <node pkg ="tf" type="static_transform_publisher" name="odom_to_base_link" args="0.0 0.0 0.0 0.0 0.0 0.0 /odom /base_link 40"/>
-     <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" args="0.2245 0.0 0.2 0.0 0.0 0.0 /base_link /laser_frame 40" />
--->
-    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ydlidar)/launch/lidar.rviz" required="true" /> -->
- 
+     <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" args="0.2245 0.0 0.2 0.0 0.0 0.0 /base_link /laser_frame 40" /> -->
 
-
+  
 </launch>
