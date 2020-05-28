@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+     
+     <!-- Publish Scan on /scan from ydlidar connection port -->
+     <node name="ydlidar_node" pkg="ydlidar" type="ydlidar_node" output="screen" respawn="false" >
+      <param name="port" type="string" value="/dev/ydlidar"/>
+      <param name="baudrate" type="int" value="128000"/>
+      <param name="frame_id" type="string" value="laser_frame"/>
+      <param name="low_exposure" type="bool" value="false"/>
+      <param name="resolution_fixed" type="bool" value="true"/>
+      <param name="auto_reconnect" type="bool" value="true"/>
+      <param name="reversion" type="bool" value="false"/>
+      <param name="angle_min" type="double" value="-180" />
+      <param name="angle_max" type="double" value="180" />
+      <param name="range_min" type="double" value="0.1" />
+      <param name="range_max" type="double" value="16.0" />
+      <param name="ignore_array" type="string" value="" />
+      <param name="samp_rate" type="int" value="9"/>
+      <param name="frequency" type="double" value="7"/>
+     </node>
+
+
+     <!-- Broadcast Required TF for Gmappng -->
+     <node pkg ="tf" type="static_transform_publisher" name="odom_to_base_link" args="0.0 0.0 0.0 0.0 0.0 0.0 /odom /base_link 40"/>
+     <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" args="0.2245 0.0 0.2 0.0 0.0 0.0 /base_link /laser_frame 40" />
+
+     <!-- Launch Gmapping -->
+<arg name="scan_topic"  default="scan" />
+  <arg name="base_frame"  default="base_link"/>
+  <arg name="odom_frame"  default="odom"/>
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="base_frame" value="$(arg base_frame)"/>
+    <param name="odom_frame" value="$(arg odom_frame)"/>
+    <param name="map_update_interval" value="0.01"/>
+    <param name="maxUrange" value="4.0"/>
+    <param name="maxRange" value="5.0"/>
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="3"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="minimumScore" value="30"/>
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+    <param name="linearUpdate" value="0.05"/>
+    <param name="angularUpdate" value="0.0436"/>
+    <param name="temporalUpdate" value="0.0001"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="8"/>
+  <!--
+    <param name="xmin" value="-50.0"/>
+    <param name="ymin" value="-50.0"/>
+    <param name="xmax" value="50.0"/>
+    <param name="ymax" value="50.0"/>
+  make the starting size small for the benefit of the Android client's memory...
+  -->
+    <param name="xmin" value="-1.0"/>
+    <param name="ymin" value="-1.0"/>
+    <param name="xmax" value="1.0"/>
+    <param name="ymax" value="1.0"/>
+
+    <param name="delta" value="0.08"/>
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+<!--      <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen" >
+      <remap from="scan" to="/scan"/>
+      <param name="map" value="/map"/>
+      <param name="odom" value="/odom"/>
+      <param name="base_link" value="/base_link"/>
+      <param name="map_update_interval" value="1"/>
+      <param name="maxUrange" value="9.0"/>
+      <param name="maxRange" value="10.0"/>
+      <param name="sigma" value="0.05"/>
+      <param name="kernelSize" value="1"/>
+      <param name="lstep" value="0.01"/>
+      <param name="astep" value="0.05"/>
+      <param name="iterations" value="5"/>
+      <param name="lsigma" value="0.075"/>
+      <param name="ogain" value="3.0"/>
+      <param name="lskip" value="0"/>
+      <param name="srr" value="0.1"/>
+      <param name="srt" value="0.2"/>
+      <param name="str" value="0.1"/>
+      <param name="stt" value="0.2"/>
+      <param name="linearUpdate" value="0.01"/>
+      <param name="angularUpdate" value="0.005"/>
+      <param name="temporalUpdate" value="0.1"/>
+      <param name="resampleThreshold" value="0.5"/>
+      <param name="particles" value="50"/>
+      <param name="xmin" value="-5.0"/>
+      <param name="ymin" value="-5.0"/>
+      <param name="xmax" value="5.0"/>
+      <param name="ymax" value="5.0"/>
+      <param name="delta" value="0.01"/>
+      <param name="llsamplerange" value="0.01"/>
+      <param name="llsamplestep" value="0.01"/>
+      <param name="lasamplerange" value="0.005"/>
+      <param name="lasamplestep" value="0.005"/>
+      <param name="minimumScore" value="0.01"/>
+      <param name="transform_publish_period" value="0.001"/>
+      <! <remap from="base_link" to="base_laser"/> -->
+    <!-- </node> -->
+
+    <!-- Launch Rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ydlidar)/launch/lidar.rviz" required="true" />
+
+
+
+</launch>
